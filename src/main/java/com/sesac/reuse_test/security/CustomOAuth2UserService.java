@@ -2,6 +2,7 @@ package com.sesac.reuse_test.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -9,6 +10,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -63,5 +65,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("email..." + email);
 
         return email;
+    }
+
+
+    protected void configure(HttpSecurity http) throws Exception {
+        //로그아웃
+        http
+                .logout()
+                .logoutUrl("/user/logout")
+                .logoutSuccessUrl("/")
+                .addLogoutHandler((request, response, authentication) -> {
+                    HttpSession session = request.getSession();
+                    session.invalidate();
+                })
+                .logoutSuccessHandler((request, response, authentication) -> response.sendRedirect("/user/login"))
+                .deleteCookies("remember-me");
     }
 }

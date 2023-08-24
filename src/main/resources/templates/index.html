@@ -140,6 +140,11 @@
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
+
+            <!-- 로그인, 로그아웃 -->
+            <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/user/login}">로그인</a>
+            <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/user/logout}">로그아웃</a>
+
             <!-- Dashboard -->
             <li class="menu-item active">
               <a href="index.html" class="menu-link">
